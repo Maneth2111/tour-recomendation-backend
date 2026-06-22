@@ -1,5 +1,6 @@
-package com.example.Tour_Recommendation.dto.response;
+package com.example.Tour_Recommendation.dto.response.auth;
 
+import com.example.Tour_Recommendation.dto.response.user.UserResponse;
 import com.example.Tour_Recommendation.model.entity.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

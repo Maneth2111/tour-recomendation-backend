@@ -1,6 +1,8 @@
 package com.example.Tour_Recommendation.exception;
 
 import com.example.Tour_Recommendation.common.ApiResponse;
+import com.example.Tour_Recommendation.exception.category.CategoryNotFoundException;
+import com.example.Tour_Recommendation.exception.tour.TourNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,6 +27,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleCategoryNotFound(CategoryNotFoundException ex) {
+        ApiResponse<Void> body = ApiResponse.error(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+    @ExceptionHandler(TourNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleTourNotFound(TourNotFoundException ex) {
+        ApiResponse<Void> body = ApiResponse.error(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse<Void>> handleRuntimeException(RuntimeException ex) {
         ApiResponse<Void> body = ApiResponse.error(
@@ -66,4 +84,5 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
+
 }

@@ -3,7 +3,7 @@ package com.example.Tour_Recommendation.service;
 import com.example.Tour_Recommendation.common.ApiResponse;
 import com.example.Tour_Recommendation.dto.request.UpdateUserRequest;
 import com.example.Tour_Recommendation.dto.request.UpdateUserStatusRequest;
-import com.example.Tour_Recommendation.dto.response.UserResponse;
+import com.example.Tour_Recommendation.dto.response.user.UserResponse;
 
 import java.util.List;
 

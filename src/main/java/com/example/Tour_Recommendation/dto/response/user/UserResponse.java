@@ -1,4 +1,4 @@
-package com.example.Tour_Recommendation.dto.response;
+package com.example.Tour_Recommendation.dto.response.user;
 
 import com.example.Tour_Recommendation.model.Enum.Role;
 import com.example.Tour_Recommendation.model.entity.User;
