@@ -1,6 +1,7 @@
 package com.example.Tour_Recommendation.controllor;
 
 import com.example.Tour_Recommendation.common.ApiResponse;
+import com.example.Tour_Recommendation.dto.request.GoogleAuthRequest;
 import com.example.Tour_Recommendation.dto.LoginRequest;
 import com.example.Tour_Recommendation.dto.RegisterRequest;
 import com.example.Tour_Recommendation.dto.response.LoginResponse;
@@ -37,6 +38,12 @@ public class AuthController {
     @Operation(summary = "Login")
     public ApiResponse<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
+    }
+
+    @PostMapping("/google")
+    @Operation(summary = "Login or register with Google")
+    public ApiResponse<LoginResponse> googleAuth(@Valid @RequestBody GoogleAuthRequest request) {
+        return authService.googleAuth(request);
     }
 
     @GetMapping("/me")

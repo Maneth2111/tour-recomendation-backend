@@ -41,6 +41,9 @@ public class User {
     @Column(length = 255)
     private String password;
 
+    @Column(name = "google_id", unique = true, length = 255)
+    private String googleId;
+
     @Column(length = 20)
     private String phone;
 

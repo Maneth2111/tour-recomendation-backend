@@ -1,6 +1,7 @@
 package com.example.Tour_Recommendation.service.serviceImp;
 
 import com.example.Tour_Recommendation.common.ApiResponse;
+import com.example.Tour_Recommendation.dto.request.GoogleAuthRequest;
 import com.example.Tour_Recommendation.dto.LoginRequest;
 import com.example.Tour_Recommendation.dto.RegisterRequest;
 import com.example.Tour_Recommendation.dto.response.LoginResponse;
@@ -9,6 +10,8 @@ import com.example.Tour_Recommendation.model.Enum.Role;
 import com.example.Tour_Recommendation.model.entity.User;
 import com.example.Tour_Recommendation.repository.UserRepository;
 import com.example.Tour_Recommendation.security.CustomUserDetails;
+import com.example.Tour_Recommendation.security.GoogleTokenVerifier;
+import com.example.Tour_Recommendation.security.GoogleUserPayload;
 import com.example.Tour_Recommendation.security.JwtService;
 import com.example.Tour_Recommendation.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -26,6 +31,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final GoogleTokenVerifier googleTokenVerifier;
 
     @Override
     public ApiResponse<UserResponse> register(RegisterRequest request) {
@@ -69,6 +75,60 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtService.generateToken(userDetails);
 
         return ApiResponse.success("Login successful", LoginResponse.from(user, token));
+    }
+
+    @Override
+    public ApiResponse<LoginResponse> googleAuth(GoogleAuthRequest request) {
+        GoogleUserPayload googleUser = googleTokenVerifier.verify(request.getIdToken());
+
+        User user = userRepository.findByGoogleId(googleUser.googleId()).orElse(null);
+        boolean isNewUser = false;
+
+        if (user == null) {
+            Optional<User> existingByEmail = userRepository.findByEmail(googleUser.email());
+            if (existingByEmail.isPresent()) {
+                user = linkGoogleAccount(existingByEmail.get(), googleUser);
+            } else {
+                user = createGoogleUser(googleUser);
+                isNewUser = true;
+            }
+        }
+
+        if (!Boolean.TRUE.equals(user.getIsActive())) {
+            throw new RuntimeException("Account is inactive");
+        }
+
+        CustomUserDetails userDetails = new CustomUserDetails(user);
+        String token = jwtService.generateToken(userDetails);
+        String message = isNewUser
+                ? "Registered with Google successfully"
+                : "Login with Google successful";
+
+        return ApiResponse.success(message, LoginResponse.from(user, token));
+    }
+
+    private User createGoogleUser(GoogleUserPayload googleUser) {
+        User user = User.builder()
+                .fullName(googleUser.name() != null ? googleUser.name() : googleUser.email())
+                .email(googleUser.email())
+                .googleId(googleUser.googleId())
+                .avatarUrl(googleUser.picture())
+                .role(Role.ROLE_USER)
+                .isActive(true)
+                .build();
+
+        return userRepository.save(user);
+    }
+
+    private User linkGoogleAccount(User user, GoogleUserPayload googleUser) {
+        user.setGoogleId(googleUser.googleId());
+        if (user.getAvatarUrl() == null && googleUser.picture() != null) {
+            user.setAvatarUrl(googleUser.picture());
+        }
+        if ((user.getFullName() == null || user.getFullName().isBlank()) && googleUser.name() != null) {
+            user.setFullName(googleUser.name());
+        }
+        return userRepository.save(user);
     }
 
     @Override
