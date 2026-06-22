@@ -1,0 +1,9 @@
+# Copy to application-local.properties and set your real values.
+# IntelliJ: Run -> Edit Configurations -> Environment variables
+
+DB_URL=jdbc:postgresql://localhost:5432/tour_recommendation_db
+DB_USERNAME=postgres
+DB_PASSWORD=your_postgres_password
+
+# Google OAuth Web Client ID
+GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
