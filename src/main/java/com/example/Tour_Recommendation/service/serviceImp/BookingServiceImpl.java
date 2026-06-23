@@ -15,6 +15,7 @@ import com.example.Tour_Recommendation.security.CustomUserDetails;
 import com.example.Tour_Recommendation.service.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -58,6 +59,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ApiResponse<List<BookingResponse>> getMyBookings(CustomUserDetails userDetails) {
         List<BookingResponse> bookings = bookingRepository
                 .findByUserIdOrderByCreatedAtDesc(userDetails.getUser().getId())
@@ -68,6 +70,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ApiResponse<BookingResponse> getMyBookingById(CustomUserDetails userDetails, Long id) {
         Booking booking = findUserBookingOrThrow(id, userDetails.getUser().getId());
         return ApiResponse.success("Booking fetched successfully", BookingResponse.from(booking));
@@ -90,6 +93,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ApiResponse<List<BookingResponse>> getAllBookings() {
         List<BookingResponse> bookings = bookingRepository.findAllByOrderByCreatedAtDesc()
                 .stream()
@@ -99,8 +103,9 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public ApiResponse<BookingResponse> updateBookingStatus(Long id, BookingStatus status) {
-        Booking booking = bookingRepository.findById(id)
+        Booking booking = bookingRepository.findWithUserAndTourById(id)
                 .orElseThrow(() -> new BookingNotFoundException(id));
 
         booking.setStatus(status);

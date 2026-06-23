@@ -1,9 +1,9 @@
 package com.example.Tour_Recommendation.model.Enum;
 
 public enum ImageUploadType {
-    AVATAR("avatars"),
-    TOUR("tours"),
-    IMAGE("images");
+        AVATAR("avatars"),
+        TOUR("tours"),
+        IMAGE("images");
 
     private final String folder;
 

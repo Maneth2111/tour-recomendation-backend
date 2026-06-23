@@ -4,6 +4,7 @@ import com.example.Tour_Recommendation.common.ApiResponse;
 import com.example.Tour_Recommendation.exception.booking.BookingNotFoundException;
 import com.example.Tour_Recommendation.exception.category.CategoryNotFoundException;
 import com.example.Tour_Recommendation.exception.payment.PaymentNotFoundException;
+import com.example.Tour_Recommendation.exception.favorite.FavoriteTourNotFoundException;
 import com.example.Tour_Recommendation.exception.review.ReviewNotFoundException;
 import com.example.Tour_Recommendation.exception.tour.TourNotFoundException;
 import com.example.Tour_Recommendation.exception.tour.TourImageNotFoundException;
@@ -59,6 +60,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(PaymentNotFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handlePaymentNotFound(PaymentNotFoundException ex) {
+        ApiResponse<Void> body = ApiResponse.error(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler(FavoriteTourNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleFavoriteTourNotFound(FavoriteTourNotFoundException ex) {
         ApiResponse<Void> body = ApiResponse.error(
                 HttpStatus.NOT_FOUND.value(),
                 ex.getMessage()
