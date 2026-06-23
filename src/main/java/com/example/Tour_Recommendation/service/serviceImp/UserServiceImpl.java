@@ -1,6 +1,7 @@
 package com.example.Tour_Recommendation.service.serviceImp;
 
 import com.example.Tour_Recommendation.common.ApiResponse;
+import com.example.Tour_Recommendation.dto.request.UpdateProfileRequest;
 import com.example.Tour_Recommendation.dto.request.UpdateUserRequest;
 import com.example.Tour_Recommendation.dto.request.UpdateUserStatusRequest;
 import com.example.Tour_Recommendation.dto.response.user.UserResponse;
@@ -8,6 +9,7 @@ import com.example.Tour_Recommendation.exception.UserNotFoundException;
 import com.example.Tour_Recommendation.model.Enum.Role;
 import com.example.Tour_Recommendation.model.entity.User;
 import com.example.Tour_Recommendation.repository.UserRepository;
+import com.example.Tour_Recommendation.security.CustomUserDetails;
 import com.example.Tour_Recommendation.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -73,6 +75,24 @@ public class UserServiceImpl implements UserService {
                 ? "User activated successfully"
                 : "User deactivated successfully";
         return ApiResponse.success(message, UserResponse.from(saved));
+    }
+
+    @Override
+    public ApiResponse<UserResponse> updateProfile(CustomUserDetails userDetails, UpdateProfileRequest request) {
+        User user = findUserOrThrow(userDetails.getUser().getId());
+
+        if (request.getFullName() != null) {
+            user.setFullName(request.getFullName());
+        }
+        if (request.getPhone() != null) {
+            user.setPhone(request.getPhone());
+        }
+        if (request.getAvatarUrl() != null) {
+            user.setAvatarUrl(request.getAvatarUrl());
+        }
+
+        User saved = userRepository.save(user);
+        return ApiResponse.success("Profile updated successfully", UserResponse.from(saved));
     }
 
     private User findUserOrThrow(Long id) {

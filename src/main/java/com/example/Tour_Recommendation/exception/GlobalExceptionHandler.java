@@ -1,8 +1,12 @@
 package com.example.Tour_Recommendation.exception;
 
 import com.example.Tour_Recommendation.common.ApiResponse;
+import com.example.Tour_Recommendation.exception.booking.BookingNotFoundException;
 import com.example.Tour_Recommendation.exception.category.CategoryNotFoundException;
+import com.example.Tour_Recommendation.exception.payment.PaymentNotFoundException;
+import com.example.Tour_Recommendation.exception.review.ReviewNotFoundException;
 import com.example.Tour_Recommendation.exception.tour.TourNotFoundException;
+import com.example.Tour_Recommendation.exception.tour.TourImageNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -43,6 +47,43 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
+
+    @ExceptionHandler(BookingNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleBookingNotFound(BookingNotFoundException ex) {
+        ApiResponse<Void> body = ApiResponse.error(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler(PaymentNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handlePaymentNotFound(PaymentNotFoundException ex) {
+        ApiResponse<Void> body = ApiResponse.error(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler(ReviewNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleReviewNotFound(ReviewNotFoundException ex) {
+        ApiResponse<Void> body = ApiResponse.error(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler(TourImageNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleTourImageNotFound(TourImageNotFoundException ex) {
+        ApiResponse<Void> body = ApiResponse.error(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse<Void>> handleRuntimeException(RuntimeException ex) {
         ApiResponse<Void> body = ApiResponse.error(
