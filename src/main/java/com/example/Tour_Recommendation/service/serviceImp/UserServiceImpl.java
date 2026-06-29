@@ -10,9 +10,12 @@ import com.example.Tour_Recommendation.model.Enum.Role;
 import com.example.Tour_Recommendation.model.entity.User;
 import com.example.Tour_Recommendation.repository.UserRepository;
 import com.example.Tour_Recommendation.security.CustomUserDetails;
+import com.example.Tour_Recommendation.service.FileStorageService;
 import com.example.Tour_Recommendation.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,6 +24,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final FileStorageService fileStorageService;
 
     @Override
     public ApiResponse<List<UserResponse>> getAllUsers() {
@@ -78,11 +82,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public ApiResponse<UserResponse> getMyProfile(CustomUserDetails userDetails) {
+        User user = findUserOrThrow(userDetails.getUser().getId());
+        return ApiResponse.success("Profile fetched successfully", UserResponse.from(user));
+    }
+
+    @Override
+    @Transactional
     public ApiResponse<UserResponse> updateProfile(CustomUserDetails userDetails, UpdateProfileRequest request) {
         User user = findUserOrThrow(userDetails.getUser().getId());
 
-        if (request.getFullName() != null) {
-            user.setFullName(request.getFullName());
+        if (request.getName() != null) {
+            user.setFullName(request.getName());
         }
         if (request.getPhone() != null) {
             user.setPhone(request.getPhone());
@@ -93,6 +105,17 @@ public class UserServiceImpl implements UserService {
 
         User saved = userRepository.save(user);
         return ApiResponse.success("Profile updated successfully", UserResponse.from(saved));
+    }
+
+    @Override
+    @Transactional
+    public ApiResponse<UserResponse> uploadAvatar(CustomUserDetails userDetails, MultipartFile file) {
+        User user = findUserOrThrow(userDetails.getUser().getId());
+        String avatarUrl = fileStorageService.store(file, "avatars");
+        user.setAvatarUrl(avatarUrl);
+
+        User saved = userRepository.save(user);
+        return ApiResponse.success("Avatar uploaded successfully", UserResponse.from(saved));
     }
 
     private User findUserOrThrow(Long id) {

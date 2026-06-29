@@ -6,6 +6,7 @@ import com.example.Tour_Recommendation.dto.request.UpdateUserRequest;
 import com.example.Tour_Recommendation.dto.request.UpdateUserStatusRequest;
 import com.example.Tour_Recommendation.dto.response.user.UserResponse;
 import com.example.Tour_Recommendation.security.CustomUserDetails;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,5 +20,9 @@ public interface UserService {
 
     ApiResponse<UserResponse> updateUserStatus(Long id, UpdateUserStatusRequest request);
 
+    ApiResponse<UserResponse> getMyProfile(CustomUserDetails userDetails);
+
     ApiResponse<UserResponse> updateProfile(CustomUserDetails userDetails, UpdateProfileRequest request);
+
+    ApiResponse<UserResponse> uploadAvatar(CustomUserDetails userDetails, MultipartFile file);
 }

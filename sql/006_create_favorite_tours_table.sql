@@ -1,5 +1,5 @@
 -- Favorite tours (wishlist) table
--- psql -U postgres -d tour_recommendation_db -f sql/005_create_favorite_tours_table.sql
+-- psql -U postgres -d tour_recommendation_db -f sql/006_create_favorite_tours_table.sql
 
 CREATE TABLE IF NOT EXISTS favorite_tours (
     id         BIGSERIAL PRIMARY KEY,

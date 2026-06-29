@@ -1,5 +1,5 @@
 -- Bookings, payments, reviews, tour_images tables
--- psql -U postgres -d tour_recommendation_db -f sql/004_create_booking_payment_review_tables.sql
+-- psql -U postgres -d tour_recommendation_db -f sql/005_create_booking_payment_review_tables.sql
 
 CREATE TABLE IF NOT EXISTS bookings (
     id            BIGSERIAL PRIMARY KEY,

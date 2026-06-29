@@ -21,28 +21,28 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admin/users")
 @RequiredArgsConstructor
-@Tag(name = "Admin")
+@Tag(name = "Admin User")
 @SecurityRequirement(name = "Bearer Authentication")
-public class AdminController {
+public class AdminUserController {
 
     private final UserService userService;
 
-    @GetMapping("/users")
+    @GetMapping
     @Operation(summary = "Get all users")
     public ApiResponse<List<UserResponse>> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     @Operation(summary = "Get user by ID")
     public ApiResponse<UserResponse> getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
     }
 
-    @PutMapping("/users/{id}")
-    @Operation(summary = "Update user by ID")
+    @PutMapping("/{id}")
+    @Operation(summary = "Update user by ID (admin)")
     public ApiResponse<UserResponse> updateUser(
             @PathVariable Long id,
             @Valid @RequestBody UpdateUserRequest request
@@ -50,7 +50,7 @@ public class AdminController {
         return userService.updateUser(id, request);
     }
 
-    @PatchMapping("/users/{id}/status")
+    @PatchMapping("/{id}/status")
     @Operation(summary = "Activate or deactivate user by ID")
     public ApiResponse<UserResponse> updateUserStatus(
             @PathVariable Long id,
